@@ -1,0 +1,51 @@
+<% include partials/header %>
+    <h1>Add numbers</h1>
+    <% if (numberErrors != undefined) {%>
+        <ul>
+        <% numberErrors.forEach(function(error) { %>
+        <li><%= error.msg %></li>
+        <% }) %>
+        </ul>
+    <% } %>
+    <form method="post" action="/numbers/add">
+        <label>Key</label><br>
+        <input type="text" name="key"><br>
+        <label>Value</label><br>
+        <input type="number" name="value"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    
+    <h2>Numbers</h2>
+    <% if (numbers != undefined) {%>
+    <ul>
+    <% numbers.forEach(function(number) { %>
+        <li><%= number.key %>   "<%= number.value %>" - <a href="#" class="deleteNumber" data-id="<%= number._id%>">Delete</a></li>
+    <% }) %>
+    </ul>
+<% } %>
+
+<h1>Add operations</h1>
+    <% if (operationErrors != undefined) {%>
+        <ul>
+        <% operationErrors.forEach(function(error) { %>
+        <li><%= error.msg %></li>
+        <% }) %>
+        </ul>
+    <% } %>
+    <form method="post" action="/operations/add">
+        <label>Key</label><br>
+        <input type="text" name="key"><br>
+        <label>Value</label><br>
+        <input type="operation" name="value"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    
+    <h2>Operations</h2>
+    <% if (operations != undefined) {%>
+    <ul>
+    <% operations.forEach(function(operation) { %>
+        <li><%= operation.key %>   "<%= operation.value %>" - <a href="#" class="deleteOperation" data-id="<%= operation._id%>">Delete</a></li>
+    <% }) %>
+    </ul>
+<% } %>
+<% include partials/footer %>
