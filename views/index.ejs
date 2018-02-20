@@ -19,7 +19,7 @@
     <% if (numbers != undefined) {%>
     <ul>
     <% numbers.forEach(function(number) { %>
-        <li><%= number.key %>   "<%= number.value %>" - <a href="#" class="deleteNumber" data-id="<%= number._id%>">Delete</a></li>
+        <li><%= number.val().key %>   "<%= number.val().value %>" - <a href="#" class="deleteNumber" data-id="<%= number.key%>">Delete</a></li>
     <% }) %>
     </ul>
 <% } %>
@@ -44,7 +44,7 @@
     <% if (operations != undefined) {%>
     <ul>
     <% operations.forEach(function(operation) { %>
-        <li><%= operation.key %>   "<%= operation.value %>" - <a href="#" class="deleteOperation" data-id="<%= operation._id%>">Delete</a></li>
+        <li> <%= operation.val().key %>   "<%= operation.val().value %>" - <a href="#" class="deleteOperation" data-id="<%= operation.key%>">Delete</a></li>
     <% }) %>
     </ul>
 <% } %>

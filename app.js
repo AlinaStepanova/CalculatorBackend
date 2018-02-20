@@ -3,9 +3,17 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var expressValidator = require('express-validator');
 var mongojs = require('mongojs');
-var db = mongojs('calculatorapp', ['numbers', 'operations']);
-var ObjectId = mongojs.ObjectId;
 var app = express();
+var firebase = require('firebase');
+
+firebase.initializeApp({
+    serviceAccount: "Calculator-b5a54fcfddf1.json",
+    databaseURL:'https://calculator-5349b.firebaseio.com/'
+});
+
+var ref = firebase.database().ref();
+var numbersRef = ref.child('numbers');
+var operationsRef = ref.child('operations');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -39,18 +47,31 @@ app.use(expressValidator({
     }
 }));
 
-app.get('/', function(req, res) { 
-    db.operations.find(function(err, docs) {
-        db.numbers.find(function(err, numb) {
-            console.log(docs);
-            res.render('index', {
-                operations : docs,
-                numbers : numb
-            });
+app.get('/', function(req, res, next) { 
+    var getNumbers = firebase.database().ref('/numbers').once('value', function(snapshot) {
+        var number = [];
+        snapshot.forEach(function(childSnapshot) {
+            number.id = childSnapshot.key;
+            number.key = childSnapshot.val().key;
+            number.value = childSnapshot.val().value;
+            console.log(number.id);
         });
+        return number;
     });
-});
-
+    
+    var getOperations = firebase.database().ref('/operations').once('value', function(snapshot) {
+        var operation = [];
+        snapshot.forEach(function(childSnapshot) {
+            operation.id = childSnapshot.key;
+            operation.key = childSnapshot.val().key;
+            operation.value = childSnapshot.val().value;
+        });
+        return operation;
+    });
+        Promise.all([getNumbers, getOperations]).then(([number, operation]) =>                    
+        res.render('index', { numbers : number, operations : operation }));
+  });  
+      
 app.post('/numbers/add', function(req, res){
     
     req.checkBody('key', 'key is required').notEmpty();
@@ -63,16 +84,15 @@ app.post('/numbers/add', function(req, res){
             numberErrors: numberErrors
         });
     } else {
-       var newNumber = {
-            key: req.body.key,
-            value: req.body.value
-        }
-       db.numbers.insert(newNumber, function(err, res){
-           if(err) {
+        numbersRef.push({
+            key : req.body.key,
+            value : req.body.value
+        }, function(err, res) {
+            if(err) {
                console.log(err);
            } 
             req.res.redirect('/');
-       });
+        });
     }
 });
 
@@ -88,43 +108,28 @@ app.post('/operations/add', function(req, res){
             operationErrors: operationErrors
         });
     } else {
-       var newOperation = {
-            key: req.body.key,
-            value: req.body.value
-        }
-       db.operations.insert(newOperation, function(err, res){
-           if(err) {
+        operationsRef.push({
+            key : req.body.key,
+            value : req.body.value
+        }, function(err, res) {
+            if(err) {
                console.log(err);
            } 
             req.res.redirect('/');
-       });
+        });
     }
 });
 
 app.delete('/numbers/delete/:id', function(req, res){
-    db.numbers.remove({_id: ObjectId(req.params.id)}, function(err, result) {
-        if (err) {
-            console.log(err);
-        }
-        req.res.redirect('/');
-    });
+    numbersRef.child(req.params.id).remove();
+    req.res.redirect('/');
 });
 
 app.delete('/operations/delete/:id', function(req, res){
-    db.operations.remove({_id: ObjectId(req.params.id)}, function(err, result) {
-        if (err) {
-            console.log(err);
-        }
-        req.res.redirect('/');
-    });
+    operationsRef.child(req.params.id).remove();
+    req.res.redirect('/');
 });
 
 app.listen(3000, function(){
     console.log("server started on port 3000...");
 })
-
-
-
-
-
-
