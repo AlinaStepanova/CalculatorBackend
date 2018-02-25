@@ -1,51 +1,65 @@
-<% include partials/header %>
-    <h1>Add numbers</h1>
-    <% if (numberErrors != undefined) {%>
-        <ul>
-        <% numberErrors.forEach(function(error) { %>
-        <li><%= error.msg %></li>
-        <% }) %>
-        </ul>
-    <% } %>
-    <form method="post" action="/numbers/add">
-        <label>Key</label><br>
-        <input type="text" name="key"><br>
-        <label>Value</label><br>
-        <input type="number" name="value"><br><br>
-        <input type="submit" value="Submit">
-    </form>
-    
-    <h2>Numbers</h2>
-    <% if (numbers != undefined) {%>
-    <ul>
-    <% numbers.forEach(function(number) { %>
-        <li><%= number.val().key %>   "<%= number.val().value %>" - <a href="#" class="deleteNumber" data-id="<%= number.key%>">Delete</a></li>
-    <% }) %>
-    </ul>
-<% } %>
+<div class="container">
+    <div class="row">
+        <% include partials/header %>
+            <div class="col-md-6 col-sm-6">
+            <br>
+            <h2 class="text-center text-primary">Add numbers</h2>
+            <% if (numberErrors != undefined) {%>
+                <ul class="text-warning">
+                <% numberErrors.forEach(function(error) { %>
+                <li><%= error.msg %></li>
+                <% }) %>
+                </ul>
+            <% } %>
+            <form method="post" action="/numbers/add">
+                <label>Key</label><br>
+                <input class="form-control" placeholder="Enter key" type="text" name="key"><br>
+                <label>Value</label><br>
+                <input type="number" class="form-control" placeholder="Enter value" name="value"><br>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <h4>Numbers</h4>
+            <% if (numbers != undefined) {%>
+                <ul class="list-group">
+                <% numbers.forEach(function(number) { %>
+                    <li class="list-group-item"><%= number.val().key %>   "<%= number.val().value %>" - <a href="#" class="deleteNumber badge badge-danger" data-id="<%= number.key%>">Delete</a></li>
+                <% }) %>
+                </ul>
+            <% } %>
+            <br>
+        </div>
+        
+        
+        <div class="col-md-6 col-sm-6">
+        <br>
+        <h2 class="text-center text-primary">Add operations</h2>
+            <% if (operationErrors != undefined) {%>
+                <ul class="text-warning">
+                <% operationErrors.forEach(function(error) { %>
+                    <li><%= error.msg %></li>
+                <% }) %>
+                </ul>
+            <% } %>
+            <div class="form-group">
+            <form method="post" action="/operations/add">
+                <label>Key</label><br>
+                <input class="form-control" placeholder="Enter key"  type="text" name="key"><br>
+                <label>Value</label><br>
+                <input class="form-control" placeholder="Enter value" type="operation" name="value"><br>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            </div>
 
-<h1>Add operations</h1>
-    <% if (operationErrors != undefined) {%>
-        <ul>
-        <% operationErrors.forEach(function(error) { %>
-        <li><%= error.msg %></li>
-        <% }) %>
-        </ul>
-    <% } %>
-    <form method="post" action="/operations/add">
-        <label>Key</label><br>
-        <input type="text" name="key"><br>
-        <label>Value</label><br>
-        <input type="operation" name="value"><br><br>
-        <input type="submit" value="Submit">
-    </form>
-    
-    <h2>Operations</h2>
-    <% if (operations != undefined) {%>
-    <ul>
-    <% operations.forEach(function(operation) { %>
-        <li> <%= operation.val().key %>   "<%= operation.val().value %>" - <a href="#" class="deleteOperation" data-id="<%= operation.key%>">Delete</a></li>
-    <% }) %>
-    </ul>
-<% } %>
-<% include partials/footer %>
+            <h4>Operations</h4>
+            <% if (operations != undefined) {%>
+                <ul class="list-group">
+                <% operations.forEach(function(operation) { %>
+                    <li class="list-group-item"> <%= operation.val().key %>   "<%= operation.val().value %>" - <a href="#" class="deleteOperation badge badge-danger" data-id="<%= operation.key%>">Delete</a></li>
+                <% }) %>
+                </ul>
+            <% } %>
+            <br>
+        <% include partials/footer %>
+        </div>
+    </div>
+</div>
